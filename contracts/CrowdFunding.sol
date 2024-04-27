@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
-
 contract CrowdFunding {
-    struct Campaign{
+    struct Campaign {
         address owner;
-        string  title;
+        string title;
         string description;
         uint256 target;
         uint256 deadline;
@@ -21,8 +20,7 @@ contract CrowdFunding {
     function createCampaign(address _owner, string memory _title, string memory _description, uint256 _target, uint256 _deadline, string memory _image) public returns (uint256) {
         Campaign storage campaign = campaigns[numberOfCampaigns];
 
-        //! is everything ok?
-        require(campaign.deadline < block.timestamp, "The deadline should be date in future.");
+        require(campaign.deadline < block.timestamp, "The deadline should be a date in the future.");
 
         campaign.owner = _owner;
         campaign.title = _title;
@@ -45,9 +43,9 @@ contract CrowdFunding {
         campaign.donators.push(msg.sender);
         campaign.donations.push(amount);
 
-        (bool sent,) = payable(campaign.owner).call{value: amount}(" ");
+        (bool sent,) = payable(campaign.owner).call{value: amount}("");
 
-        if(sent){
+        if(sent) {
             campaign.amountCollected = campaign.amountCollected + amount;
         }
     }
@@ -56,14 +54,15 @@ contract CrowdFunding {
         return (campaigns[_id].donators, campaigns[_id].donations);
     }
 
-    function getCampaigns() public view returns (Campaign[] memory ){
+    function getCampaigns() public view returns (Campaign[] memory) {
         Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns);
 
-        for(uint i = 0; i < numberOfCampaigns; i++){
+        for(uint i = 0; i < numberOfCampaigns; i++) {
             Campaign storage item = campaigns[i];
 
             allCampaigns[i] = item;
         }
+
         return allCampaigns;
     }
 }
